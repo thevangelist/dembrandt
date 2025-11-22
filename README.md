@@ -1,4 +1,4 @@
-# Dembrandt
+# 🎨 Dembrandt
 
 A CLI tool for extracting design tokens and brand assets from any website. Powered by Playwright with advanced bot detection avoidance.
 
@@ -29,6 +29,49 @@ Dembrandt analyzes live websites and extracts their complete design system:
 - **Frameworks** — CSS framework detection (Tailwind, Bootstrap, Material-UI, Chakra)
 
 Perfect for competitive analysis, brand audits, or rebuilding a brand when you don't have design guidelines.
+
+## Why It Matters
+
+**Designers** — Analyze competitor systems, document production tokens, audit brand consistency
+
+**Developers** — Migrate design tokens, reverse engineer components, validate implementations
+
+**Product Managers** — Track competitor evolution, quantify design debt, evaluate vendors
+
+**Marketing** — Audit competitor brands, plan rebrands, monitor brand compliance
+
+**Engineering Leaders** — Measure technical debt, plan migrations, assess acquisition targets
+
+## How It Works
+
+Uses Playwright to render the page, extracts computed styles from the DOM, analyzes color usage and confidence, groups similar typography, detects spacing patterns, and returns actionable design tokens.
+
+### Extraction Process
+
+1. **Browser Launch** - Launches Chromium with stealth configuration
+2. **Anti-Detection** - Injects scripts to bypass bot detection
+3. **Navigation** - Navigates to target URL with retry logic
+4. **Hydration** - Waits for SPAs to fully load (8s initial + 4s stabilization)
+5. **Content Validation** - Verifies page content is substantial (>500 chars)
+6. **Parallel Extraction** - Runs all extractors concurrently for speed
+7. **Analysis** - Analyzes computed styles, DOM structure, and CSS variables
+8. **Scoring** - Assigns confidence scores based on context and usage
+
+### Color Confidence
+
+- **High** — Logo, brand elements, primary buttons
+- **Medium** — Interactive elements, icons, navigation
+- **Low** — Generic UI components (filtered from display)
+
+Only shows high and medium confidence colors in terminal. Full palette in JSON.
+
+### Typography Detection
+
+Samples all heading levels (h1-h6), body text, buttons, links. Groups by font family, size, and weight. Detects Google Fonts, Adobe Fonts, custom @font-face.
+
+### Framework Detection
+
+Recognizes Tailwind CSS, Bootstrap, Material-UI, and others by class patterns and CDN links.
 
 ## Installation
 
@@ -80,27 +123,7 @@ npx dembrandt stripe.com --debug
 
 Useful for troubleshooting bot detection, timeouts, or extraction issues.
 
-## Features
-
-### Advanced Bot Detection Avoidance
-- Stealth mode with anti-detection scripts
-- Automatic fallback to visible browser on detection
-- Human-like interaction simulation (mouse movement, scrolling)
-- Custom user agent and browser fingerprinting
-
-### Smart Retry Logic
-- Automatic retry on navigation failures (up to 2 attempts)
-- SPA hydration detection and waiting
-- Content validation to ensure page is fully loaded
-- Detailed progress logging at each step
-
-### Comprehensive Logging
-- Real-time spinner with step-by-step progress
-- Detailed extraction metrics (colors found, styles detected, etc.)
-- Error context with URL, stage, and attempt information
-- Debug mode with full stack traces
-
-## What You Get
+## Output
 
 ### Automatic JSON Saves
 
@@ -113,83 +136,46 @@ Example: `output/stripe.com/2025-11-22T14-30-45.json`
 
 ### Terminal Output
 
-Clean tables showing:
+Clean, formatted tables showing:
 - Color palette with confidence ratings (with visual swatches)
 - CSS variables with color previews
-- Typography hierarchy
+- Typography hierarchy with context
 - Spacing scale (4px/8px grid detection)
 - Shadow system
 - Button variants
-- Framework detection
+- Component style breakdowns
+- Framework and icon system detection
 
 ### JSON Output Format
 
-Full extraction data for programmatic use (see [Output Format](#output-format) section for complete structure):
+Complete extraction data for programmatic use:
 
 ```json
 {
-  "url": "https://stripe.com",
-  "extractedAt": "2025-11-22T14:30:45.123Z",
-  "logo": {
-    "source": "img",
-    "url": "https://stripe.com/logo.png",
-    "width": 120,
-    "height": 40
-  },
+  "url": "https://example.com",
+  "extractedAt": "2025-11-22T...",
+  "logo": { "source": "img", "url": "...", "width": 120, "height": 40 },
   "colors": {
-    "semantic": {
-      "primary": "#635bff"
-    },
-    "palette": [
-      {
-        "color": "#635bff",
-        "confidence": "high",
-        "sources": ["primary", "button"],
-        "count": 45
-      }
-    ],
-    "cssVariables": {
-      "--color-primary": "#635bff"
-    }
+    "semantic": { "primary": "#3b82f6", ... },
+    "palette": [{ "color": "#3b82f6", "confidence": "high", "count": 45, "sources": [...] }],
+    "cssVariables": { "--color-primary": "#3b82f6", ... }
   },
   "typography": {
-    "styles": [
-      {
-        "fontFamily": "Inter, sans-serif",
-        "fontSize": "16px",
-        "fontSizeRem": "1.00rem",
-        "fontWeight": "400",
-        "lineHeight": "24px",
-        "contexts": ["p", "body"]
-      }
-    ],
-    "sources": {
-      "googleFonts": ["Inter"],
-      "adobeFonts": false
-    }
-  }
+    "styles": [{ "fontFamily": "Inter", "fontSize": "16px", "fontWeight": "400", ... }],
+    "sources": { "googleFonts": [...], "adobeFonts": false, "customFonts": [...] }
+  },
+  "spacing": { "scaleType": "8px", "commonValues": [{ "px": "16px", "rem": "1rem", "count": 42 }, ...] },
+  "borderRadius": { "values": [{ "value": "8px", "count": 15, "confidence": "high" }, ...] },
+  "shadows": [{ "shadow": "0 2px 4px rgba(0,0,0,0.1)", "count": 8, "confidence": "high" }, ...],
+  "components": {
+    "buttons": [{ "backgroundColor": "...", "color": "...", "padding": "...", ... }],
+    "inputs": [{ "type": "input", "border": "...", "borderRadius": "...", ... }]
+  },
+  "breakpoints": [{ "px": "768px" }, ...],
+  "iconSystem": [{ "name": "Font Awesome", "type": "icon-font" }, ...],
+  "frameworks": [{ "name": "Tailwind CSS", "confidence": "high", "evidence": "class patterns" }]
 }
 ```
-
-## How It Works
-
-Uses Playwright to render the page. Extracts computed styles from the DOM. Analyzes color usage and confidence. Groups similar typography. Detects spacing patterns. Returns actionable design tokens.
-
-### Color Confidence
-
-- **High** — Logo, brand elements, primary buttons
-- **Medium** — Interactive elements, icons, navigation
-- **Low** — Generic UI components (filtered from display)
-
-Only shows high and medium confidence colors in terminal. Full palette in JSON.
-
-### Typography Detection
-
-Samples all heading levels (h1-h6), body text, buttons, links. Groups by font family, size, and weight. Detects Google Fonts, Adobe Fonts, custom @font-face.
-
-### Framework Detection
-
-Recognizes Tailwind CSS, Bootstrap, Material-UI, and others by class patterns and CDN links.
 
 ## Examples
 
@@ -252,54 +238,25 @@ Rebuild a brand when original design guidelines are unavailable.
 ### Quality Assurance
 Verify design consistency across different pages and environments.
 
-## Output Format
+## Advanced Features
 
-### Terminal Output
-Clean, formatted tables with:
-- Color swatches with confidence indicators
-- Typography hierarchy with context
-- Component style breakdowns
-- Framework and icon system detection
+### Bot Detection Avoidance
+- Stealth mode with anti-detection scripts
+- Automatic fallback to visible browser on detection
+- Human-like interaction simulation (mouse movement, scrolling)
+- Custom user agent and browser fingerprinting
 
-### JSON Output
-Complete extraction data including:
-```json
-{
-  "url": "https://example.com",
-  "extractedAt": "2025-11-22T...",
-  "logo": { "source": "img", "url": "...", "width": 120, "height": 40 },
-  "colors": {
-    "semantic": { "primary": "#3b82f6", ... },
-    "palette": [{ "color": "#3b82f6", "confidence": "high", "count": 45, "sources": [...] }],
-    "cssVariables": { "--color-primary": "#3b82f6", ... }
-  },
-  "typography": {
-    "styles": [{ "fontFamily": "Inter", "fontSize": "16px", "fontWeight": "400", ... }],
-    "sources": { "googleFonts": [...], "adobeFonts": false, "customFonts": [...] }
-  },
-  "spacing": { "scaleType": "8px", "commonValues": [{ "px": "16px", "rem": "1rem", "count": 42 }, ...] },
-  "borderRadius": { "values": [{ "value": "8px", "count": 15, "confidence": "high" }, ...] },
-  "shadows": [{ "shadow": "0 2px 4px rgba(0,0,0,0.1)", "count": 8, "confidence": "high" }, ...],
-  "components": {
-    "buttons": [{ "backgroundColor": "...", "color": "...", "padding": "...", ... }],
-    "inputs": [{ "type": "input", "border": "...", "borderRadius": "...", ... }]
-  },
-  "breakpoints": [{ "px": "768px" }, ...],
-  "iconSystem": [{ "name": "Font Awesome", "type": "icon-font" }, ...],
-  "frameworks": [{ "name": "Tailwind CSS", "confidence": "high", "evidence": "class patterns" }]
-}
-```
+### Smart Retry Logic
+- Automatic retry on navigation failures (up to 2 attempts)
+- SPA hydration detection and waiting
+- Content validation to ensure page is fully loaded
+- Detailed progress logging at each step
 
-## How It Works
-
-1. **Browser Launch** - Launches Chromium with stealth configuration
-2. **Anti-Detection** - Injects scripts to bypass bot detection
-3. **Navigation** - Navigates to target URL with retry logic
-4. **Hydration** - Waits for SPAs to fully load (8s initial + 4s stabilization)
-5. **Content Validation** - Verifies page content is substantial (>500 chars)
-6. **Parallel Extraction** - Runs all extractors concurrently for speed
-7. **Analysis** - Analyzes computed styles, DOM structure, and CSS variables
-8. **Scoring** - Assigns confidence scores based on context and usage
+### Comprehensive Logging
+- Real-time spinner with step-by-step progress
+- Detailed extraction metrics (colors found, styles detected, etc.)
+- Error context with URL, stage, and attempt information
+- Debug mode with full stack traces
 
 ## Troubleshooting
 
@@ -358,16 +315,16 @@ Dembrandt extracts publicly available design information (colors, fonts, spacing
 
 **Ethical:** Use for inspiration and analysis, not direct copying. Respect servers (no mass crawling), give credit to sources, be transparent about data origin.
 
-## License
-
-MIT
-
 ## Contributing
 
 Issues and pull requests welcome. Please include:
 - Clear description of the issue/feature
 - Example URLs that demonstrate the problem
 - Expected vs actual behavior
+
+## License
+
+MIT
 
 ## Roadmap
 
