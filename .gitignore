@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Output
+output/
+
+# Don't commit example outputs (but allow examples/ directory)
+*.json
+!package*.json
+!examples/*.json
+
+# Coverage
+coverage/
+
+.claude
