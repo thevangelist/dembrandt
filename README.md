@@ -14,16 +14,17 @@ No installation required! Extract design tokens from any website in seconds.
 
 Dembrandt analyzes live websites and extracts their complete design system:
 
-- **Colors** — Brand colors, semantic roles, CSS variables with confidence scoring
-- **Typography** — Font families, sizes, weights, line heights from all heading levels
-- **Spacing** — Margin and padding scales with grid detection (4px/8px systems)
+- **Logo** — Logo detection (img/svg) with dimensions and source URL
+- **Colors** — Semantic colors, color palette with confidence scoring, CSS variables
+- **Typography** — Font families, sizes, weights, line heights, font sources (Google Fonts, Adobe Fonts, custom)
+- **Spacing** — Margin and padding scales with grid system detection (4px/8px/custom)
+- **Border Radius** — Corner radius patterns with usage frequency
 - **Shadows** — Box shadow values for elevation systems
-- **Border Radius** — Corner radius patterns used across components
-- **Buttons** — Component styles, variants, and interaction states
-- **Inputs** — Form field styles and focus states
-- **Breakpoints** — Responsive design breakpoints
-- **Icons** — Detected icon libraries (Font Awesome, Material Icons, etc.)
-- **Frameworks** — Identified CSS frameworks and libraries
+- **Buttons** — Component styles with variants and states
+- **Inputs** — Form field styles (input, textarea, select)
+- **Breakpoints** — Responsive design breakpoints from media queries
+- **Icons** — Icon system detection (Font Awesome, Material Icons, SVG)
+- **Frameworks** — CSS framework detection (Tailwind, Bootstrap, Material-UI, Chakra)
 
 Perfect for competitive analysis, brand audits, or rebuilding a brand when you don't have design guidelines.
 
@@ -121,32 +122,49 @@ Clean tables showing:
 
 ### JSON Output Format
 
-Full extraction data for programmatic use:
+Full extraction data for programmatic use (see [Output Format](#output-format) section for complete structure):
 
 ```json
 {
+  "url": "https://stripe.com",
+  "extractedAt": "2025-11-22T14:30:45.123Z",
+  "logo": {
+    "source": "img",
+    "url": "https://stripe.com/logo.png",
+    "width": 120,
+    "height": 40
+  },
   "colors": {
     "semantic": {
-      "primary": "#3b82f6",
-      "success": "#10b981"
+      "primary": "#635bff"
     },
     "palette": [
       {
-        "color": "#3b82f6",
+        "color": "#635bff",
         "confidence": "high",
-        "sources": ["branding", "interactive"],
+        "sources": ["primary", "button"],
         "count": 45
       }
-    ]
+    ],
+    "cssVariables": {
+      "--color-primary": "#635bff"
+    }
   },
   "typography": {
     "styles": [
       {
         "fontFamily": "Inter, sans-serif",
         "fontSize": "16px",
-        "fontWeight": "400"
+        "fontSizeRem": "1.00rem",
+        "fontWeight": "400",
+        "lineHeight": "24px",
+        "contexts": ["p", "body"]
       }
-    ]
+    ],
+    "sources": {
+      "googleFonts": ["Inter"],
+      "adobeFonts": false
+    }
   }
 }
 ```
@@ -247,20 +265,26 @@ Complete extraction data including:
 {
   "url": "https://example.com",
   "extractedAt": "2025-11-22T...",
+  "logo": { "source": "img", "url": "...", "width": 120, "height": 40 },
   "colors": {
     "semantic": { "primary": "#3b82f6", ... },
-    "palette": [{ "color": "#3b82f6", "confidence": "high", ... }],
+    "palette": [{ "color": "#3b82f6", "confidence": "high", "count": 45, "sources": [...] }],
     "cssVariables": { "--color-primary": "#3b82f6", ... }
   },
   "typography": {
-    "styles": [...],
-    "sources": { "googleFonts": [...], ... }
+    "styles": [{ "fontFamily": "Inter", "fontSize": "16px", "fontWeight": "400", ... }],
+    "sources": { "googleFonts": [...], "adobeFonts": false, "customFonts": [...] }
   },
-  "spacing": { "scaleType": "8px", "commonValues": [...] },
-  "components": { "buttons": [...], "inputs": [...] },
-  "breakpoints": [...],
-  "iconSystem": [...],
-  "frameworks": [...]
+  "spacing": { "scaleType": "8px", "commonValues": [{ "px": "16px", "rem": "1rem", "count": 42 }, ...] },
+  "borderRadius": { "values": [{ "value": "8px", "count": 15, "confidence": "high" }, ...] },
+  "shadows": [{ "shadow": "0 2px 4px rgba(0,0,0,0.1)", "count": 8, "confidence": "high" }, ...],
+  "components": {
+    "buttons": [{ "backgroundColor": "...", "color": "...", "padding": "...", ... }],
+    "inputs": [{ "type": "input", "border": "...", "borderRadius": "...", ... }]
+  },
+  "breakpoints": [{ "px": "768px" }, ...],
+  "iconSystem": [{ "name": "Font Awesome", "type": "icon-font" }, ...],
+  "frameworks": [{ "name": "Tailwind CSS", "confidence": "high", "evidence": "class patterns" }]
 }
 ```
 
@@ -301,7 +325,8 @@ Use `--debug` to see:
 
 - Captures default/light theme only (dark mode not detected)
 - Hover/focus states extracted from CSS (not fully interactive)
-- JavaScript-heavy sites require hydration time
+- Canvas/WebGL-rendered sites cannot be analyzed (e.g., Tesla, Apple Vision Pro demos)
+- JavaScript-heavy sites require hydration time (8s initial + 4s stabilization)
 - Some dynamically-loaded content may be missed
 - Requires viewport simulation at 1920x1080
 
@@ -322,6 +347,14 @@ dembrandt/
 ├── package.json
 └── README.md
 ```
+
+## Ethics & Legality
+
+Dembrandt extracts publicly available design information (colors, fonts, spacing) from website DOMs for analysis purposes. This falls under fair use in most jurisdictions (USA's DMCA § 1201(f), EU Software Directive 2009/24/EC) when used for competitive analysis, documentation, or learning.
+
+**Legal:** Analyzing public HTML/CSS is generally legal. Does not bypass protections or violate copyright. Check site ToS before mass extraction.
+
+**Ethical:** Use for inspiration and analysis, not direct copying. Respect servers (no mass crawling), give credit to sources, be transparent about data origin.
 
 ## License
 
