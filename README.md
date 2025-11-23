@@ -193,7 +193,8 @@ Creates a Figma-compatible JSON file that can be imported into Figma using the D
 
 The plugin-ready JSON is saved alongside the regular output with a `-figma.json` suffix.
 
-📦 **Figma Plugin Setup:**
+📦 **Figma Plugin Setup: (EXPERIMENTAL)**
+
 1. Clone or download this repository to access the [figma-plugin](./figma-plugin) folder
 2. In Figma Desktop: **Plugins** → **Development** → **Import plugin from manifest...**
 3. Navigate to the `figma-plugin` folder and select `manifest.json`
