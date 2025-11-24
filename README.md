@@ -26,6 +26,7 @@ Dembrandt analyzes live websites and extracts their complete design system:
 - **Typography** — Font families, sizes, weights, line heights, font sources (Google Fonts, Adobe Fonts, custom)
 - **Spacing** — Margin and padding scales with grid system detection (4px/8px/custom)
 - **Border Radius** — Corner radius patterns with usage frequency
+- **Borders** — Border widths, styles (solid, dashed, dotted), and colors with confidence scoring
 - **Shadows** — Box shadow values for elevation systems
 - **Buttons** — Component styles with variants and states
 - **Inputs** — Form field styles (input, textarea, select)
@@ -174,6 +175,14 @@ dembrandt stripe.com --mobile
 
 Simulates a mobile device viewport for responsive design token extraction.
 
+**`--slow`** - Use 3x longer timeouts for slow-loading sites
+
+```bash
+dembrandt linkedin.com --slow
+```
+
+Helpful for sites with heavy JavaScript, complex SPAs, or aggressive bot detection that need extra time to fully load.
+
 ## Output
 
 ### Automatic JSON Saves
@@ -272,6 +281,9 @@ dembrandt mysite.com --json-only | jq '{
   fontFamily: .typography.sources,
   spacing: .spacing.commonValues
 }' > design-tokens.json
+
+# Or use the built-in Tailwind CSS exporter (see lib/exporters.js)
+# Converts extracted tokens to Tailwind config format
 ```
 
 ## Use Cases
@@ -361,11 +373,12 @@ Use `--debug` to see:
 
 ```
 dembrandt/
-├── index.js              # CLI entry point, command handling
+├── index.js                      # CLI entry point, command handling
 ├── lib/
-│   ├── extractors.js     # Core extraction logic with stealth mode
-│   └── display.js        # Terminal output formatting
-├── output/               # Auto-saved JSON extractions (gitignored)
+│   ├── extractors.js             # Core extraction logic with stealth mode
+│   ├── display.js                # Terminal output formatting
+│   └── exporters.js              # Export to Tailwind CSS config (NEW)
+├── output/                       # Auto-saved JSON extractions (gitignored)
 │   ├── stripe.com/
 │   │   ├── 2025-11-22T14-30-45.json
 │   │   └── 2025-11-22T15-12-33.json

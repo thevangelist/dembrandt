@@ -26,6 +26,7 @@ program
   .option("--verbose-colors", "Show medium and low confidence colors")
   .option("--dark-mode", "Extract colors from dark mode")
   .option("--mobile", "Extract from mobile viewport")
+  .option("--slow", "3x longer timeouts for slow-loading sites")
   .action(async (input, opts) => {
     let url = input;
     if (!url.match(/^https?:\/\//)) url = "https://" + url;
@@ -64,6 +65,7 @@ program
             navigationTimeout: 90000,
             darkMode: opts.darkMode,
             mobile: opts.mobile,
+            slow: opts.slow,
           });
           break;
         } catch (err) {
@@ -89,7 +91,7 @@ program
         }
       }
 
-      spinner.succeed("Done!");
+      console.log();
 
       // Save JSON output automatically (unless --json-only)
       if (!opts.jsonOnly) {
@@ -109,14 +111,14 @@ program
 
           console.log(
             chalk.dim(
-              `\n💾 JSON saved to: ${chalk.cyan(
+              `💾 JSON saved to: ${chalk.hex('#8BE9FD')(
                 `output/${domain}/${filename}`
               )}`
             )
           );
         } catch (err) {
           console.log(
-            chalk.yellow(`⚠ Could not save JSON file: ${err.message}`)
+            chalk.hex('#FFB86C')(`⚠ Could not save JSON file: ${err.message}`)
           );
         }
       }
@@ -125,6 +127,7 @@ program
       if (opts.jsonOnly) {
         console.log(JSON.stringify(result, null, 2));
       } else {
+        console.log();
         displayResults(result, { verboseColors: opts.verboseColors });
       }
     } catch (err) {
@@ -140,7 +143,7 @@ program
 
       if (!opts.debug) {
         console.log(
-          chalk.yellow(
+          chalk.hex('#FFB86C')(
             "\nTip: Try with --debug flag for tough sites and detailed error logs"
           )
         );
