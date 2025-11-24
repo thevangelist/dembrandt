@@ -17,6 +17,7 @@
 - Lowered content validation threshold from 500 to 100 chars for minimal-text sites
 - Clearer border style display with `(per-side)` label for shorthand values
 - Shadows now sorted by confidence and usage frequency (most confident first)
+- Button detection now includes outline/bordered buttons (previously skipped transparent backgrounds)
 
 ## [0.2.0] - 2025-11-22
 
