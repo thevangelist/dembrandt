@@ -16,6 +16,7 @@
 - Test suite refocused on SPA and interactive sites
 - Lowered content validation threshold from 500 to 100 chars for minimal-text sites
 - Clearer border style display with `(per-side)` label for shorthand values
+- Shadows now sorted by confidence and usage frequency (most confident first)
 
 ## [0.2.0] - 2025-11-22
 
