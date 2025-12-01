@@ -10,7 +10,7 @@
 import { program } from "commander";
 import chalk from "chalk";
 import ora from "ora";
-import { chromium } from "playwright";
+import { chromium } from "playwright-core";
 import { extractBranding } from "./lib/extractors.js";
 import { displayResults } from "./lib/display.js";
 import { writeFileSync, mkdirSync } from "fs";

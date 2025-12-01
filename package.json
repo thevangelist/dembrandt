@@ -15,8 +15,7 @@
     "start": "node index.js",
     "brand-challenge": "node run-no-login-challenge.mjs",
     "brand-challenge:report": "node run-no-login-challenge.mjs || true",
-    "install-browser": "npx playwright install chromium",
-    "postinstall": "npx playwright install chromium --with-deps || echo 'Playwright install failed, you may need to run: npx playwright install chromium'",
+    "install-browser": "npx playwright install chromium || echo 'Playwright browser installation failed. You may need to install system dependencies manually.'",
     "release": "./release.sh"
   },
   "keywords": [
@@ -39,10 +38,11 @@
   "author": "thevangelist <info@esajuhana.com>",
   "license": "MIT",
   "dependencies": {
+    "@playwright/browser-chromium": "^1.57.0",
     "chalk": "^5.3.0",
     "commander": "^11.1.0",
     "ora": "^7.0.1",
-    "playwright": "^1.40.0"
+    "playwright-core": "^1.57.0"
   },
   "engines": {
     "node": ">=18.0.0"
