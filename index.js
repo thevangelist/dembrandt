@@ -23,6 +23,7 @@ program
   .argument("<url>")
   .option("--json-only", "Output raw JSON")
   .option("-d, --debug", "Force visible browser")
+  .option("--save-output", "Save JSON file to output folder")
   .option("--verbose-colors", "Show medium and low confidence colors")
   .option("--dark-mode", "Extract colors from dark mode")
   .option("--mobile", "Extract from mobile viewport")
@@ -93,8 +94,8 @@ program
 
       console.log();
 
-      // Save JSON output automatically (unless --json-only)
-      if (!opts.jsonOnly) {
+      // Save JSON output only if --save-output is specified
+      if (opts.saveOutput && !opts.jsonOnly) {
         try {
           const domain = new URL(url).hostname.replace("www.", "");
           const timestamp = new Date()

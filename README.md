@@ -11,10 +11,10 @@ Extract any website’s design system into design tokens in a few seconds: logo,
 ## Install
 
 ```bash
-npx dembrandt stripe.com
+npx dembrandt bmw.de
 ```
 
-Or install globally: `npm install -g dembrandt` then run `dembrandt stripe.com`
+Or install globally: `npm install -g dembrandt` then run `dembrandt bmw.de`
 
 Requires Node.js 18+
 
@@ -33,14 +33,15 @@ Requires Node.js 18+
 
 ```bash
 dembrandt <url>                    # Basic extraction
-dembrandt stripe.com --json-only   # JSON output
-dembrandt site.com --debug         # Visible browser
-dembrandt site.com --dark-mode     # Dark mode
-dembrandt site.com --mobile        # Mobile viewport
-dembrandt site.com --slow          # 3x timeouts
+dembrandt bmw.de --save-output     # Save JSON to output folder
+dembrandt bmw.de --json-only       # JSON output only (no save)
+dembrandt bmw.de --debug           # Visible browser
+dembrandt bmw.de --dark-mode       # Dark mode
+dembrandt bmw.de --mobile          # Mobile viewport
+dembrandt bmw.de --slow            # 3x timeouts
 ```
 
-Results auto-save to `output/domain.com/YYYY-MM-DDTHH-MM-SS.json`
+By default, results display in terminal only. Use `--save-output` to save JSON to `output/bmw.de/YYYY-MM-DDTHH-MM-SS.json`
 
 ## Use Cases
 
