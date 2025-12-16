@@ -42,9 +42,34 @@ dembrandt bmw.de --dark-mode       # Extract colors from dark mode variant
 dembrandt bmw.de --mobile          # Use mobile viewport (390x844, iPhone 12/13/14/15) for responsive analysis
 dembrandt bmw.de --slow            # 3x longer timeouts (24s hydration) for JavaScript-heavy sites
 dembrandt bmw.de --no-sandbox      # Disable Chromium sandbox (required for Docker/CI)
+dembrandt bmw.de --browser=firefox # Use Firefox instead of Chromium (better for Cloudflare bypass)
 ```
 
 Default: formatted terminal display only. Use `--save-output` to persist results as JSON files. Browser automatically retries in visible mode if headless extraction fails.
+
+### Browser Selection
+
+By default, dembrandt uses Chromium. If you encounter bot detection or timeouts (especially on sites behind Cloudflare), try Firefox which is often more successful at bypassing these protections:
+
+```bash
+# Use Firefox instead of Chromium
+dembrandt bmw.de --browser=firefox
+
+# Combine with other flags
+dembrandt bmw.de --browser=firefox --save-output --dtcg
+```
+
+**When to use Firefox:**
+- Sites behind Cloudflare or other bot detection systems
+- Timeout issues on heavily protected sites
+- WSL environments where headless Chromium may struggle
+
+**Installation:**
+Firefox browser is installed automatically with `npm install`. If you need to install manually:
+
+```bash
+npx playwright install firefox
+```
 
 ### W3C Design Tokens (DTCG) Format
 
@@ -70,7 +95,7 @@ Uses Playwright to render the page, extracts computed styles from the DOM, analy
 
 ### Extraction Process
 
-1. Browser Launch - Launches Chromium with stealth configuration
+1. Browser Launch - Launches browser (Chromium by default, Firefox optional) with stealth configuration
 2. Anti-Detection - Injects scripts to bypass bot detection
 3. Navigation - Navigates to target URL with retry logic
 4. Hydration - Waits for SPAs to fully load (8s initial + 4s stabilization)

@@ -10,7 +10,7 @@
 import { program } from "commander";
 import chalk from "chalk";
 import ora from "ora";
-import { chromium } from "playwright-core";
+import { chromium, firefox } from "playwright-core";
 import { extractBranding } from "./lib/extractors.js";
 import { displayResults } from "./lib/display.js";
 import { toW3CFormat } from "./lib/w3c-exporter.js";
@@ -22,6 +22,7 @@ program
   .description("Extract design tokens from any website")
   .version("0.5.0")
   .argument("<url>")
+  .option("--browser <type>", "Browser to use (chromium|firefox)", "chromium")
   .option("--json-only", "Output raw JSON")
   .option("--save-output", "Save JSON file to output folder")
   .option("--dtcg", "Export in W3C Design Tokens (DTCG) format")
@@ -43,13 +44,20 @@ program
       let result;
 
       while (true) {
+        // Select browser type based on --browser flag
+        const browserType = opts.browser === 'firefox' ? firefox : chromium;
+
         spinner.text = `Launching browser (${useHeaded ? "visible" : "headless"
           } mode)`;
-        const launchArgs = ["--disable-blink-features=AutomationControlled"];
-        if (opts.noSandbox) {
+        // Firefox-specific launch args (Firefox doesn't support Chromium flags)
+        const launchArgs = opts.browser === 'firefox'
+          ? [] // Firefox has different flags
+          : ["--disable-blink-features=AutomationControlled"];
+
+        if (opts.noSandbox && opts.browser === 'chromium') {
           launchArgs.push("--no-sandbox", "--disable-setuid-sandbox");
         }
-        browser = await chromium.launch({
+        browser = await browserType.launch({
           headless: !useHeaded,
           args: launchArgs,
         });
